@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
     inProgress: TodoItem[] = [];
     done: TodoItem[] = [];
     newTaskDescription = '';
+    notEditing = true;
     private apiURL = 'http://localhost:8080/todo-list/items';
     private tasksFromServer: TodoItem[] = [];
 
@@ -81,5 +82,9 @@ export class AppComponent implements OnInit {
                 task.status = 'Done';
                 break;
         }
+    }
+
+    edit() {
+        this.notEditing = !this.notEditing;
     }
 }

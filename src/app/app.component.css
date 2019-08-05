@@ -57,18 +57,28 @@ h1, h2 {
 }
 
 .task-content {
-    padding-left: 20px;
-    padding-right: 200px;
+    padding-left: 10px;
+    padding-right: 170px;
 }
 
 .fa-arrows-alt {
     cursor: grab;
 }
 
-.fa-trash, .fa-plus:enabled {
+.fa-trash, .fa-pencil-alt, .fa-save, .fa-plus:enabled {
     cursor: pointer;
+}
+
+.fa-pencil-alt, .fa-save {
+    padding-left: 15px;
+    padding-right: 10px;
 }
 
 .row {
     width: 70%;
+}
+
+.task-content-edit {
+    width: 70%;
+    padding-right: 170px;
 }

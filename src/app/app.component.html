@@ -22,14 +22,17 @@
     <h2>To do</h2>
 
     <div #todoList="cdkDropList" (cdkDropListDropped)="drop($event)" [cdkDropListConnectedTo]="[inProgressList]"
-         [cdkDropListData]="toDos" cdkDropList class="example-list" id="toDos"
-    >
+         [cdkDropListData]="toDos" cdkDropList class="example-list" id="toDos">
         <div *ngFor="let item of toDos" cdkDrag class="example-box">
             <div>
                 <i (click)="delete(item, toDos)" class="fas fa-trash"></i>
-                <span class="task-content">
+                <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
+                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
+                <label for="editTodo"></label>
+                <input *ngIf="!notEditing" [(ngModel)]="item.description" class="task-content-edit" id="editTodo"/>
                 <i cdkDragHandle class="fas fa-arrows-alt"></i>
             </div>
         </div>
@@ -48,9 +51,14 @@
         <div *ngFor="let item of inProgress" cdkDrag class="example-box">
             <div>
                 <i (click)="delete(item, inProgress)" class="fas fa-trash"></i>
-                <span class="task-content">
+                <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
+                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
+                <label for="editInProgress"></label>
+                <input *ngIf="!notEditing" [(ngModel)]="item.description" class="task-content-edit"
+                       id="editInProgress"/>
                 <i cdkDragHandle class="fas fa-arrows-alt"></i>
             </div>
         </div>
@@ -67,9 +75,13 @@
         <div *ngFor="let item of done" cdkDrag class="example-box">
             <div>
                 <i (click)="delete(item, done)" class="fas fa-trash"></i>
-                <span class="task-content">
+                <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
+                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
+                <label for="editDone"></label>
+                <input *ngIf="!notEditing" [(ngModel)]="item.description" class="task-content-edit" id="editDone"/>
                 <i cdkDragHandle class="fas fa-arrows-alt"></i>
             </div>
         </div>
