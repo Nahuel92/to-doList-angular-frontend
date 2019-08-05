@@ -1,7 +1,11 @@
+<h1>To-do list</h1>
+
 <div class="row">
     <div class="col-xs-6 col-md-4">
         <div class="input-group">
-            <input [(ngModel)]="newTaskDescription" class="form-control" placeholder="Enter new task" type="text"/>
+            <label for="newTask"></label>
+            <input [(ngModel)]="newTaskDescription" class="form-control" id="newTask" placeholder="Enter new task"
+                   type="text"/>
             <div class="input-group-btn">
                 <button (click)="createNewTask()" [disabled]="descriptionIsInvalid()" class="btn btn-primary"
                         type="button">
@@ -18,13 +22,15 @@
     <h2>To do</h2>
 
     <div #todoList="cdkDropList" (cdkDropListDropped)="drop($event)" [cdkDropListConnectedTo]="[inProgressList]"
-         [cdkDropListData]="toDos"
-         cdkDropList
-         class="example-list" id="toDos">
+         [cdkDropListData]="toDos" cdkDropList class="example-list" id="toDos"
+    >
         <div *ngFor="let item of toDos" cdkDrag class="example-box">
             <div>
-                <span (click)="delete(item, toDos)">Delete me</span>
-                {{item.description}} - {{item.status}}
+                <i (click)="delete(item, toDos)" class="fas fa-trash"></i>
+                <span class="task-content">
+                    {{item.description}}
+                </span>
+                <i cdkDragHandle class="fas fa-arrows-alt"></i>
             </div>
         </div>
     </div>
@@ -39,7 +45,15 @@
          cdkDropList
          class="example-list"
          id="inProgress">
-        <div *ngFor="let item of inProgress" cdkDrag class="example-box">{{item.description}} - {{item.status}}</div>
+        <div *ngFor="let item of inProgress" cdkDrag class="example-box">
+            <div>
+                <i (click)="delete(item, inProgress)" class="fas fa-trash"></i>
+                <span class="task-content">
+                    {{item.description}}
+                </span>
+                <i cdkDragHandle class="fas fa-arrows-alt"></i>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -50,6 +64,14 @@
          [cdkDropListData]="done"
          cdkDropList
          class="example-list" id="done">
-        <div *ngFor="let item of done" cdkDrag class="example-box">{{item.description}} - {{item.status}}</div>
+        <div *ngFor="let item of done" cdkDrag class="example-box">
+            <div>
+                <i (click)="delete(item, done)" class="fas fa-trash"></i>
+                <span class="task-content">
+                    {{item.description}}
+                </span>
+                <i cdkDragHandle class="fas fa-arrows-alt"></i>
+            </div>
+        </div>
     </div>
 </div>
