@@ -5,6 +5,8 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
     declarations: [
@@ -14,7 +16,9 @@ import {FormsModule} from '@angular/forms';
         BrowserModule,
         HttpClientModule,
         DragDropModule,
-        FormsModule
+        FormsModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot()
     ],
     providers: [],
     bootstrap: [AppComponent]

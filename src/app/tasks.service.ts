@@ -7,7 +7,6 @@ import {Observable} from 'rxjs';
     providedIn: 'root'
 })
 export class TasksService {
-    private apiGetURL = 'http://localhost:8080/todo-list/items';
     private apiURL = 'http://localhost:8080/todo-list/item';
     private httpOptions = {
         headers: new HttpHeaders({
@@ -18,14 +17,16 @@ export class TasksService {
     constructor(private httpClient: HttpClient) {
     }
 
-    deleteTodoItem(deletedTask: TodoItem) {
-        const deleteURL = `${this.apiURL}/${deletedTask.id}`;
-        return this.httpClient.delete(deleteURL);
+    deleteAll() {
+        return this.httpClient.delete(`${this.apiURL}s`);
     }
 
-    getAllTodoItemsFromServer(): Observable<TodoItem[]> {
-        return this.httpClient
-            .get<TodoItem[]>(this.apiGetURL, {responseType: 'json'});
+    deleteTodoItem(deletedTask: TodoItem) {
+        return this.httpClient.delete(`${this.apiURL}/${deletedTask.id}`);
+    }
+
+    getAllTodoItems(): Observable<TodoItem[]> {
+        return this.httpClient.get<TodoItem[]>(`${this.apiURL}s`, {responseType: 'json'});
     }
 
     postTodoItem(newTask: TodoItem) {

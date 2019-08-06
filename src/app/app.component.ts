@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TodoItem} from './entities/TodoItem';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {TasksService} from './tasks.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
     selector: 'app-root',
@@ -13,9 +14,9 @@ export class AppComponent implements OnInit {
     inProgress: TodoItem[] = [];
     done: TodoItem[] = [];
     newTaskDescription = '';
-    notEditing = true;
+    private taskBeingEditing: TodoItem;
 
-    constructor(private tasksService: TasksService) {
+    constructor(private tasksService: TasksService, private toastr: ToastrService) {
     }
 
     ngOnInit() {
@@ -39,53 +40,47 @@ export class AppComponent implements OnInit {
             id: 1900, description: this.newTaskDescription,
             status: 'Pending', createdDatetime: null
         };
-
-        this.toDos.push(newTask);
+        this.newTaskDescription = '';
 
         this.tasksService
             .postTodoItem(newTask)
-            .subscribe(() => {
-                },
-                error => console.log(error));
-    }
-
-    delete(item: TodoItem, list: TodoItem[]): void {
-        this.tasksService.deleteTodoItem(item).subscribe(() => {
-        }, error => console.log(error));
-
-        const itemIndex = list.indexOf(item);
-        list.splice(itemIndex, 1);
-    }
-
-    edit(): void {
-        this.notEditing = !this.notEditing;
-    }
-
-    descriptionIsInvalid(): boolean {
-        return this.newTaskDescription.trim().length < 1;
-    }
-
-    update(updatedTask: TodoItem) {
-        this.tasksService.updateTodoItem(updatedTask).subscribe(() => {
-            },
-            error => console.log(error)
-        );
-        this.edit();
-    }
-
-    private getAllTodoItemsFromServer(): void {
-        this.tasksService.getAllTodoItemsFromServer()
-            .subscribe(tasksFromServer => {
-                    this.arrangeTasksByStatus(tasksFromServer);
-                },
-                error => console.log(error)
+            .subscribe(() => this.toDos.push(newTask),
+                error => this.toastr.error(error.error.errorMessages, 'Error')
             );
     }
 
-    private arrangeTasksByStatus(tasksFromServer: TodoItem[]): void {
-        this.toDos = tasksFromServer.filter(a => a.status === 'Pending');
-        this.inProgress = tasksFromServer.filter(a => a.status === 'In Progress');
-        this.done = tasksFromServer.filter(a => a.status === 'Done');
+    areTasksListsEmpty(): boolean {
+        return this.toDos.length < 1 && this.inProgress.length < 1 && this.done.length < 1;
+    }
+
+    delete(item: TodoItem, list: TodoItem[]): void {
+        this.tasksService.deleteTodoItem(item).subscribe(() => list.splice(list.indexOf(item), 1),
+            error => this.toastr.error(error.error.errorMessages, 'Error')
+        );
+    }
+
+    deleteAll(): void {
+        this.tasksService.deleteAll().subscribe(() => this.pruneTasksLists(),
+            error => this.toastr.error(error.error.errorMessages, 'Error')
+        );
+    }
+
+    edit(task: TodoItem): void {
+        this.taskBeingEditing = task;
+    }
+
+    isEditing(task: TodoItem): boolean {
+        return this.taskBeingEditing === task;
+    }
+
+    stopEditing(): void {
+        this.taskBeingEditing = null;
+    }
+
+    update(updatedTask: TodoItem): void {
+        this.tasksService.updateTodoItem(updatedTask).subscribe(() => this.stopEditing(),
+            error => this.toastr.error(error.error.errorMessages, 'Error')
+        );
     }
 
     private changeTaskStatus(event: CdkDragDrop<TodoItem[]>): void {
@@ -105,5 +100,28 @@ export class AppComponent implements OnInit {
                 this.tasksService.updateTodoItem(task).subscribe();
                 break;
         }
+    }
+
+    descriptionIsInvalid(): boolean {
+        return this.newTaskDescription.trim().length < 1;
+    }
+
+    private pruneTasksLists(): void {
+        this.toDos = [];
+        this.inProgress = [];
+        this.done = [];
+    }
+
+    private getAllTodoItemsFromServer(): void {
+        this.tasksService.getAllTodoItems()
+            .subscribe(tasksFromServer => this.arrangeTasksByStatus(tasksFromServer),
+                error => this.toastr.error(error.error.errorMessages, 'Error')
+            );
+    }
+
+    private arrangeTasksByStatus(tasksFromServer: TodoItem[]): void {
+        this.toDos = tasksFromServer.filter(a => a.status === 'Pending');
+        this.inProgress = tasksFromServer.filter(a => a.status === 'In Progress');
+        this.done = tasksFromServer.filter(a => a.status === 'Done');
     }
 }

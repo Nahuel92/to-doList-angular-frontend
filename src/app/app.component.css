@@ -82,3 +82,8 @@ h1, h2 {
     width: 70%;
     padding-right: 170px;
 }
+
+.deleteButton {
+    position: absolute;
+    right: 0;
+}
