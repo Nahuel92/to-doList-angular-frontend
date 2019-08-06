@@ -44,10 +44,15 @@ export class AppComponent implements OnInit {
 
         this.tasksService
             .postTodoItem(newTask)
-            .subscribe();
+            .subscribe(() => {
+                },
+                error => console.log(error));
     }
 
     delete(item: TodoItem, list: TodoItem[]): void {
+        this.tasksService.deleteTodoItem(item).subscribe(() => {
+        }, error => console.log(error));
+
         const itemIndex = list.indexOf(item);
         list.splice(itemIndex, 1);
     }
@@ -61,15 +66,20 @@ export class AppComponent implements OnInit {
     }
 
     update(updatedTask: TodoItem) {
-        this.tasksService.updateTodoItem(updatedTask).subscribe();
+        this.tasksService.updateTodoItem(updatedTask).subscribe(() => {
+            },
+            error => console.log(error)
+        );
         this.edit();
     }
 
     private getAllTodoItemsFromServer(): void {
         this.tasksService.getAllTodoItemsFromServer()
             .subscribe(tasksFromServer => {
-                this.arrangeTasksByStatus(tasksFromServer);
-            });
+                    this.arrangeTasksByStatus(tasksFromServer);
+                },
+                error => console.log(error)
+            );
     }
 
     private arrangeTasksByStatus(tasksFromServer: TodoItem[]): void {
