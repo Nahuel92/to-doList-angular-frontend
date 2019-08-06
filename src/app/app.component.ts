@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {TodoItem} from './entities/TodoItem';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {TasksService} from './tasks.service';
 
 @Component({
     selector: 'app-root',
@@ -14,17 +14,15 @@ export class AppComponent implements OnInit {
     done: TodoItem[] = [];
     newTaskDescription = '';
     notEditing = true;
-    private apiURL = 'http://localhost:8080/todo-list/items';
-    private tasksFromServer: TodoItem[] = [];
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private tasksService: TasksService) {
     }
 
     ngOnInit() {
         this.getAllTodoItemsFromServer();
     }
 
-    drop(event: CdkDragDrop<TodoItem[]>) {
+    drop(event: CdkDragDrop<TodoItem[]>): void {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
             return;
@@ -36,55 +34,66 @@ export class AppComponent implements OnInit {
         this.changeTaskStatus(event);
     }
 
-    createNewTask() {
+    createNewTask(): void {
         const newTask: TodoItem = {
-            id: null, description: this.newTaskDescription,
+            id: 1900, description: this.newTaskDescription,
             status: 'Pending', createdDatetime: null
         };
+
         this.toDos.push(newTask);
+
+        this.tasksService
+            .postTodoItem(newTask)
+            .subscribe();
+    }
+
+    delete(item: TodoItem, list: TodoItem[]): void {
+        const itemIndex = list.indexOf(item);
+        list.splice(itemIndex, 1);
+    }
+
+    edit(): void {
+        this.notEditing = !this.notEditing;
     }
 
     descriptionIsInvalid(): boolean {
         return this.newTaskDescription.trim().length < 1;
     }
 
-    delete(item: TodoItem, list: TodoItem[]) {
-        const itemIndex = list.indexOf(item);
-        list.splice(itemIndex, 1);
+    update(updatedTask: TodoItem) {
+        this.tasksService.updateTodoItem(updatedTask).subscribe();
+        this.edit();
     }
 
-    private getAllTodoItemsFromServer() {
-        this.httpClient
-            .get<TodoItem[]>(this.apiURL, {responseType: 'json'})
-            .subscribe(apiData => {
-                this.tasksFromServer = apiData;
-                this.arrangeTasksByStatus();
+    private getAllTodoItemsFromServer(): void {
+        this.tasksService.getAllTodoItemsFromServer()
+            .subscribe(tasksFromServer => {
+                this.arrangeTasksByStatus(tasksFromServer);
             });
     }
 
-    private arrangeTasksByStatus() {
-        this.toDos = this.tasksFromServer.filter(a => a.status === 'Pending');
-        this.inProgress = this.tasksFromServer.filter(a => a.status === 'In Progress');
-        this.done = this.tasksFromServer.filter(a => a.status === 'Done');
+    private arrangeTasksByStatus(tasksFromServer: TodoItem[]): void {
+        this.toDos = tasksFromServer.filter(a => a.status === 'Pending');
+        this.inProgress = tasksFromServer.filter(a => a.status === 'In Progress');
+        this.done = tasksFromServer.filter(a => a.status === 'Done');
     }
 
-    private changeTaskStatus(event: CdkDragDrop<TodoItem[]>) {
+    private changeTaskStatus(event: CdkDragDrop<TodoItem[]>): void {
         const task = event.container.data[event.currentIndex];
 
         switch (event.container.id) {
             case 'toDos':
                 task.status = 'Pending';
+                this.tasksService.updateTodoItem(task).subscribe();
                 break;
             case 'inProgress':
                 task.status = 'In Progress';
+                this.tasksService.updateTodoItem(task).subscribe();
                 break;
             case 'done':
                 task.status = 'Done';
+                this.tasksService.updateTodoItem(task).subscribe();
                 break;
         }
-    }
-
-    edit() {
-        this.notEditing = !this.notEditing;
     }
 }

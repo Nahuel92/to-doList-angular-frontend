@@ -27,7 +27,7 @@
             <div>
                 <i (click)="delete(item, toDos)" class="fas fa-trash"></i>
                 <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
-                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <i (click)="update(item)" *ngIf="!notEditing" class="fas fa-save"></i>
                 <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
@@ -52,7 +52,7 @@
             <div>
                 <i (click)="delete(item, inProgress)" class="fas fa-trash"></i>
                 <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
-                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <i (click)="update(item)" *ngIf="!notEditing" class="fas fa-save"></i>
                 <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
@@ -76,7 +76,7 @@
             <div>
                 <i (click)="delete(item, done)" class="fas fa-trash"></i>
                 <i (click)="edit()" *ngIf="notEditing" class="fas fa-pencil-alt"></i>
-                <i (click)="edit()" *ngIf="!notEditing" class="fas fa-save"></i>
+                <i (click)="update(item)" *ngIf="!notEditing" class="fas fa-save"></i>
                 <span *ngIf="notEditing" class="task-content">
                     {{item.description}}
                 </span>
