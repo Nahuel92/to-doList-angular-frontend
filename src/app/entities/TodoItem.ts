@@ -1,5 +1,5 @@
 export interface TodoItem {
-    id: number;
+    id: string;
     description: string;
     createdDatetime: string;
     status: string;

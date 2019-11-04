@@ -37,14 +37,14 @@ export class AppComponent implements OnInit {
 
     createNewTask(): void {
         const newTask: TodoItem = {
-            id: 1900, description: this.newTaskDescription,
+            id: null, description: this.newTaskDescription,
             status: 'Pending', createdDatetime: null
         };
         this.newTaskDescription = '';
 
         this.tasksService
             .postTodoItem(newTask)
-            .subscribe(() => this.toDos.push(newTask),
+            .subscribe((taskCreated: TodoItem) => this.toDos.push(taskCreated),
                 error => this.toastr.error(error.error.errorMessages, 'Error')
             );
     }
