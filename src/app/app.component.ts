@@ -3,6 +3,7 @@ import {TodoItem} from './entities/TodoItem';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {TasksService} from './tasks.service';
 import {ToastrService} from 'ngx-toastr';
+import {NewTodoItem} from './entities/NewTodoItem';
 
 @Component({
     selector: 'app-root',
@@ -36,9 +37,8 @@ export class AppComponent implements OnInit {
     }
 
     createNewTask(): void {
-        const newTask: TodoItem = {
-            id: null, description: this.newTaskDescription,
-            status: 'Pending', createdDatetime: null
+        const newTask: NewTodoItem = {
+            description: this.newTaskDescription
         };
         this.newTaskDescription = '';
 
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
 
         switch (event.container.id) {
             case 'toDos':
-                task.status = 'Pending';
+                task.status = 'Created';
                 this.tasksService.updateTodoItem(task).subscribe();
                 break;
             case 'inProgress':
@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
     }
 
     private arrangeTasksByStatus(tasksFromServer: TodoItem[]): void {
-        this.toDos = tasksFromServer.filter(a => a.status === 'Pending');
+        this.toDos = tasksFromServer.filter(a => a.status === 'Created');
         this.inProgress = tasksFromServer.filter(a => a.status === 'In Progress');
         this.done = tasksFromServer.filter(a => a.status === 'Done');
     }

@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import {TodoItem} from './entities/TodoItem';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {NewTodoItem} from './entities/NewTodoItem';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TasksService {
-    private apiURL = 'http://localhost:8080/todo-list/item';
+    private apiURL = 'http://localhost:8080/v1/todo-list/items';
     private httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json'
@@ -18,7 +19,7 @@ export class TasksService {
     }
 
     deleteAll() {
-        return this.httpClient.delete(`${this.apiURL}s`);
+        return this.httpClient.delete(this.apiURL);
     }
 
     deleteTodoItem(deletedTask: TodoItem) {
@@ -26,10 +27,10 @@ export class TasksService {
     }
 
     getAllTodoItems(): Observable<TodoItem[]> {
-        return this.httpClient.get<TodoItem[]>(`${this.apiURL}s`, {responseType: 'json'});
+        return this.httpClient.get<TodoItem[]>(this.apiURL, {responseType: 'json'});
     }
 
-    postTodoItem(newTask: TodoItem) {
+    postTodoItem(newTask: NewTodoItem) {
         return this.httpClient.post(this.apiURL, newTask, this.httpOptions);
     }
 

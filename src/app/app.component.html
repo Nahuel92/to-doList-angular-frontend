@@ -4,11 +4,11 @@
     <div class="col-xs-6 col-md-4">
         <div class="input-group">
             <label for="newTask"></label>
-            <input [(ngModel)]="newTaskDescription" class="form-control" id="newTask" placeholder="Enter new task"
-                   type="text"/>
+            <input (keydown.enter)="createNewTask()" [(ngModel)]="newTaskDescription" class="form-control" id="newTask"
+                   placeholder="Enter new task" type="text"/>
             <div class="input-group-btn">
-                <button (click)="createNewTask()" [disabled]="descriptionIsInvalid()" class="btn btn-primary"
-                        type="button">
+                <button (click)="createNewTask()" [disabled]="descriptionIsInvalid()"
+                        class="btn btn-primary" type="button">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
